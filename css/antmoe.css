@@ -119,8 +119,8 @@ img {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 }
 #footer:before {
     background-color: rgba(0, 0, 0, 0);

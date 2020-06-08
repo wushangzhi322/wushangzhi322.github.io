@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>自动定位当前城市获取实时天气预报</title>
+    <url>/2020/06/02/article2/</url>
+    <content><![CDATA[<blockquote>
+<p>先上效果图，看图说话</p>
+</blockquote>
+<p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/79d3cb9c9744bdbbdb1d6bc413874812.png"  alt="效果图1"></p>
+<blockquote>
+<p>废话少说，直接撸教程</p>
+</blockquote>
+<h3 id="一、利用百度地图api自动获取当前ip所在城市名"><a href="#一、利用百度地图api自动获取当前ip所在城市名" class="headerlink" title="一、利用百度地图api自动获取当前ip所在城市名"></a><strong>一、利用百度地图api自动获取当前ip所在城市名</strong></h3><h4 id="1-登录百度开放平台，在控制台创建我的应用"><a href="#1-登录百度开放平台，在控制台创建我的应用" class="headerlink" title="1.登录百度开放平台，在控制台创建我的应用"></a>1.登录百度开放平台，在控制台创建我的应用</h4><p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/d8abf5d6d17cebdb60cccf16dde269fa.png"  alt="效果图2"></p>
+<h4 id="2-创建成功后，复制应用AK键"><a href="#2-创建成功后，复制应用AK键" class="headerlink" title="2.创建成功后，复制应用AK键"></a>2.创建成功后，复制应用AK键</h4><h4 id="3-在项目页面引入百度地图片api"><a href="#3-在项目页面引入百度地图片api" class="headerlink" title="3.在项目页面引入百度地图片api"></a>3.在项目页面引入百度地图片api</h4><p><code>&lt;script type=&quot;text/javascript&quot; src=&quot;http://api.map.baidu.com/api?v=2.0&amp;ak=你的应用AK&quot;&gt;&lt;/script&gt;</code></p>
+<h4 id="4-编写JQ代码获取当前ip所在城市名"><a href="#4-编写JQ代码获取当前ip所在城市名" class="headerlink" title="4.编写JQ代码获取当前ip所在城市名"></a>4.编写JQ代码获取当前ip所在城市名</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$(function () &#123;</span><br><span class="line"></span><br><span class="line">                var myCity &#x3D; new BMap.LocalCity();</span><br><span class="line">                var cityName &#x3D; &quot;&quot;;</span><br><span class="line">                myCity.get(function(data)&#123;</span><br><span class="line">                    cityName &#x3D; data.name;</span><br><span class="line">                    if(cityName.indexOf(&quot;市&quot;) !&#x3D; -1)&#123;</span><br><span class="line">                        cityName &#x3D; cityName.substr(0,cityName.indexOf(&quot;市&quot;));</span><br><span class="line">					&#125;</span><br><span class="line">                    getWeather(cityName);</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">            &#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="二、通过WebService调用天气预报接口"><a href="#二、通过WebService调用天气预报接口" class="headerlink" title="二、通过WebService调用天气预报接口"></a><strong>二、通过WebService调用天气预报接口</strong></h3><h4 id="1-Maven导入WebService相关依赖"><a href="#1-Maven导入WebService相关依赖" class="headerlink" title="1.Maven导入WebService相关依赖"></a>1.Maven导入WebService相关依赖</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!-- WebService相关依赖--&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.apache.axis&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;axis&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.4&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;javax.xml.rpc&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;javax.xml.rpc-api&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.1&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;commons-discovery&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;commons-discovery&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;0.2&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;axis&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;axis-wsdl4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.5.1&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-根据天气预报接口wsdl文件生成客户端代码"><a href="#2-根据天气预报接口wsdl文件生成客户端代码" class="headerlink" title="2.根据天气预报接口wsdl文件生成客户端代码"></a>2.根据天气预报接口wsdl文件生成客户端代码</h4><blockquote>
+<p><code>wsdl文件地址：http://www.webxml.com.cn/WebServices/WeatherWebService.asmx?wsdl</code></p>
+</blockquote>
+<p>将wsdl文件保存至项目</p>
+<p>对wsdl文件进行编译后，利用IDEA工具自动生成客户端代码集</p>
+<p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/888ff912eb9ae75aeb0d53ed03c64580.png"  alt="效果图3"><br><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/e78ef0ec05910ac1c1c1b51df47d3108.png"  alt="效果图4"></p>
+<p>自动生成以下文件</p>
+<p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/cf500075b22430d5bfef2d741dcb997d.png"  alt="效果图5"><br><strong><code>（如果自动生成不了，请按以下操作尝试几次）</code></strong></p>
+<p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/4eca7275ff414c9c1f6b6837ce09116c.png"  alt="效果图6"></p>
+<h3 id="三、前端AJAX请求调用本地项目天气预报客户端数据"><a href="#三、前端AJAX请求调用本地项目天气预报客户端数据" class="headerlink" title="三、前端AJAX请求调用本地项目天气预报客户端数据"></a><strong>三、前端AJAX请求调用本地项目天气预报客户端数据</strong></h3><h4 id="1-后台调用客户端天气预报方法"><a href="#1-后台调用客户端天气预报方法" class="headerlink" title="1.后台调用客户端天气预报方法"></a>1.后台调用客户端天气预报方法</h4><p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/815657b78f1b555e4aef21c5a32d71b0.png"  alt="效果图7"></p>
+<h4 id="2-字符串数组weatherInfo封装了全部天气预报信息，用户可定制自已需要的天气信息"><a href="#2-字符串数组weatherInfo封装了全部天气预报信息，用户可定制自已需要的天气信息" class="headerlink" title="2.字符串数组weatherInfo封装了全部天气预报信息，用户可定制自已需要的天气信息"></a>2.字符串数组weatherInfo封装了全部天气预报信息，用户可定制自已需要的天气信息</h4><p><img src="/" class="lazyload" data-src="http://img.zhiblog.cn/img/blog/e80c887ab7fa2e90c3e1be4acb3b5df5.png"  alt="效果图8"></p>
+<blockquote>
+<p>ps：虽然使用是免费的，但是每天有使用次数限制<br><del>唉</del>，果然世界上没有免费的午餐滴</p>
+</blockquote>
+<p><img src="/" class="lazyload" data-src="https://cdn.jsdelivr.net/gh/blogimg/emotion/custom/7.webp"  alt="7-小康博客"></p>
+]]></content>
+      <categories>
+        <category>后端技术</category>
+        <category>Java</category>
+        <category>WebService</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>WebService</tag>
+        <tag>JavaScript</tag>
+        <tag>天气预报接口wsdl</tag>
+        <tag>百度地图api</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Sybase数据库备份与还原</title>
+    <url>/2020/05/27/Sybase%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/</url>
+    <content><![CDATA[<h1 id="一、Sybase简介"><a href="#一、Sybase简介" class="headerlink" title="一、Sybase简介"></a>一、Sybase简介</h1><p>Sybase是一种关系型数据库系统，是一种典型的UNIX或WindowsNT平台上客户机或服务器环境下的大型数据库系统。 Sybase提供了一套应用程序编程接口和库，可以与非Sybase数据源及服务器集成，允许在多个数据库之间复制数据，适于创建多层应用。系统具有完备的触发器、存储过程、规则以及完整性定义，支持优化查询，具有较好的数据安全性。Sybase通常与SybaseSQLAnywhere用于客户机/服务器环境，前者作为服务器数据库，后者为客户机数据库。<br>Sybase优点：适用于大型企业信息建设，功能强大，性能稳定，经受了银行、电信的TB级数据的多年考验；<br>Sybase缺点：操作复杂，上手慢，其安装、部署和管理需要sybase精通的数据库管理专家操作。</p>
+<hr>
+<h1 id="二、sybase备份"><a href="#二、sybase备份" class="headerlink" title="二、sybase备份"></a>二、sybase备份</h1><ol>
+<li>cmd 进入数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">isql -U sa </span><br><span class="line">password</span><br></pre></td></tr></table></figure></li>
+<li>使用数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use aicods_gd</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+<li>备份数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkpoint      &#x2F;&#x2F;将所有脏页写入到数据库设备</span><br><span class="line">go</span><br><span class="line">sp_flushstats   &#x2F;&#x2F;将内存中存储的统计信息刷新到systabstats系统表</span><br><span class="line">go</span><br><span class="line">dump database aicods to &#39;compress::F:\backup\CW\aicods.dmp&#39;	&#x2F;&#x2F;开始备份</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzU2OTFiNzNiYTYwYWY2MjcxYTBkNGJiYzRlYWRkNDFiLnBuZw?x-oss-process=image/format,png"  alt="演示图片1"></li>
+</ol>
+<hr>
+<h1 id="三、sybase还原"><a href="#三、sybase还原" class="headerlink" title="三、sybase还原"></a>三、sybase还原</h1><ol>
+<li>cmd 进入数据库</li>
+<li>创建数据库<br>a、创建数据库设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use master </span><br><span class="line">go</span><br><span class="line">disk init</span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_dat&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_dat.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;128M&quot;</span><br><span class="line">go</span><br><span class="line">(physname:设备存放的磁盘路径）</span><br><span class="line">(size:设备分配的大小空间，可通过sp_helpdb aicods查看源数据库的大小与设备信息)</span><br></pre></td></tr></table></figure>
+b、创建数据库日志设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">disk init </span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_log&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_log.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;32M&quot;</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+c、创建数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create database aicods</span><br><span class="line">   on dev_db_aicods_dat&#x3D;128</span><br><span class="line">   log on dev_db_aicods_log&#x3D;32</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzViZGQ3MjFmYzRmZjkyOTZhNzZhYzVhMTJlMzRjOTA1LnBuZw?x-oss-process=image/format,png"  alt="演示图片2"><br><br><br></li>
+<li>开始还原<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">load database aicods from &#39;compress::F:\backup\CW\aicods.dmp&#39;</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+<li>还原结束后，需要重新激活数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">online database aicods </span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>Sybase</category>
+      </categories>
+      <tags>
+        <tag>Sybase</tag>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux环境下搭建Java、安装Mysql和部署应用</title>
+    <url>/2020/06/02/Linux%E7%8E%AF%E5%A2%83%E4%B8%8B%E6%90%AD%E5%BB%BAJava%E3%80%81%E5%AE%89%E8%A3%85Mysql%E5%92%8C%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<blockquote>
+<p><strong><code>服务器系统：CentOS 7.6 64位</code></strong><br><strong><code>JDK：jdk-8u191-linux-x64.tar</code></strong><br><strong><code>Mysql：mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz</code></strong><br><strong><code>Tomcat：tomcat-8.0.35</code></strong><br><strong><code>应用：</code></strong><a href="http://www.zhiblog.cn/" target="_blank" rel="noopener">志博客</a></p>
+</blockquote>
+<h3 id="一、Linux常用命令："><a href="#一、Linux常用命令：" class="headerlink" title="一、Linux常用命令："></a><strong>一、Linux常用命令：</strong></h3><h4 id="1-基本的命令："><a href="#1-基本的命令：" class="headerlink" title="1. 基本的命令："></a>1. 基本的命令：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd   	切换命令</span><br><span class="line">cp  	拷贝</span><br><span class="line">mv  	移动</span><br><span class="line">mkdir 	创建文件夹</span><br><span class="line">rm  	删除  </span><br><span class="line">rm -rf 	强制删除</span><br><span class="line">touch 	创建文件夹</span><br><span class="line">ll	查看文件列表</span><br><span class="line">cat 	查看文件全部内容</span><br><span class="line">kill -9 强制杀死一个进程</span><br><span class="line">find 	查找文件</span><br><span class="line">ps -elf|grep tomcat	查看tomcat进程</span><br><span class="line">rz	上传</span><br><span class="line">sz filename	下载</span><br><span class="line">yum  	在线安装</span><br></pre></td></tr></table></figure>
+<h4 id="2-常用命令晋级"><a href="#2-常用命令晋级" class="headerlink" title="2. 常用命令晋级"></a>2. 常用命令晋级</h4><ul>
+<li><p>vim 编辑文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim filename	进入vi命令</span><br><span class="line">:set nu	在vi命令下 显示所有行号   </span><br><span class="line">i	进入编辑模式</span><br><span class="line">esc	退出编辑模式</span><br><span class="line">：wq	保存退出vim</span><br><span class="line">：q	不保存退出</span><br><span class="line">:q!	不存盘退出</span><br></pre></td></tr></table></figure></li>
+<li><p>tar 解压缩</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">解压	tar zxvf FileName.tar.gz</span><br><span class="line">压缩	tar zcvf FileName.tar.gz  DirName</span><br><span class="line">		压缩后的名字	要压缩的文件夹</span><br></pre></td></tr></table></figure></li>
+<li><p>zip文件解压缩</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zip all.zip *.jpg	将所有.jpg的文件压缩成一个zip包</span><br><span class="line">unzip all.zip		将all.zip中的所有文件解压到当前目录中</span><br><span class="line">unzip all.zip -d all	将all.zip 中的所有文件解压到当前目录中的all文件夹中</span><br><span class="line">zip -r hy.zip hy	将当前目录下的hy文件夹压缩为hy.zip</span><br><span class="line">zip -r hy.zip hy 123.txt	将当前目录下的hy文件夹和123.txt压缩为hy.zip</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<br>
+
+<h3 id="二、Linux安装JDK："><a href="#二、Linux安装JDK：" class="headerlink" title="二、Linux安装JDK："></a><strong>二、Linux安装JDK：</strong></h3><h4 id="1-官网下载jdk：http-www-oracle-com-technetwork-java-javase-downloads-jdk8-downloads-2133151-html"><a href="#1-官网下载jdk：http-www-oracle-com-technetwork-java-javase-downloads-jdk8-downloads-2133151-html" class="headerlink" title="1.官网下载jdk：http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html"></a>1.官网下载jdk：<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html</a></h4><pre><code>选择linux x64 jdk-8u161-linux-x64.tar.gz</code></pre><h4 id="2-在-usr下建立一个java目录，以备将java程序安装在此目录下，输入如下命令："><a href="#2-在-usr下建立一个java目录，以备将java程序安装在此目录下，输入如下命令：" class="headerlink" title="2.在/usr下建立一个java目录，以备将java程序安装在此目录下，输入如下命令："></a>2.在/usr下建立一个java目录，以备将java程序安装在此目录下，输入如下命令：</h4> <pre><code> mkdir /usr/java  （目录名称随便取） </code></pre>
+<h4 id="3-将安装文件移动到该目录"><a href="#3-将安装文件移动到该目录" class="headerlink" title="3.将安装文件移动到该目录"></a>3.将安装文件移动到该目录</h4> <pre><code>mv jdk-8u161-linux-x64.tar.gz jdk8  （重命名文件)
+ cp jdk-8u161-linux-x64.tar.gz /usr/java  (复制文件) </code></pre>
+<h4 id="4-查看-usr-java目录，输入如下命令："><a href="#4-查看-usr-java目录，输入如下命令：" class="headerlink" title="4.查看/usr/java目录，输入如下命令："></a>4.查看/usr/java目录，输入如下命令：</h4> <pre><code> cd /usr/java   
+ ls -a </code></pre>
+<h4 id="5-解压文件，输入如下命令："><a href="#5-解压文件，输入如下命令：" class="headerlink" title="5.解压文件，输入如下命令："></a>5.解压文件，输入如下命令：</h4><pre><code>tar jdk-8u161-linux-x64.tar.gz
+rm -rf jdk-8u161-linux-x64.tar.gz 删除源文件
+</code></pre>
+<h4 id="6-环境变量的设置。"><a href="#6-环境变量的设置。" class="headerlink" title="6.环境变量的设置。"></a>6.环境变量的设置。</h4><pre><code>vi /etc/profile</code></pre>
+<h4 id="7-进入配置文件添加配置信息-在文件最后添加以下信息"><a href="#7-进入配置文件添加配置信息-在文件最后添加以下信息" class="headerlink" title="7.进入配置文件添加配置信息(在文件最后添加以下信息)"></a>7.进入配置文件添加配置信息(在文件最后添加以下信息)</h4><pre><code>JAVA_HOME=/usr/java/jdk1.8.0_75
+JRE_HOME=/usr/java/jdk1.8.0_75/jre
+CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+PATH=$JAVA_HOME/bin:$PATH
+export PATH JAVA_HOME CLASSPATH
+保存并退出
+</code></pre>
+<h4 id="8-使用配置文件生效"><a href="#8-使用配置文件生效" class="headerlink" title="8.使用配置文件生效"></a>8.使用配置文件生效</h4><pre><code>source /etc/profile</code></pre>
+<h4 id="9-验证是否安装成功，输入如下命令："><a href="#9-验证是否安装成功，输入如下命令：" class="headerlink" title="9.验证是否安装成功，输入如下命令："></a>9.验证是否安装成功，输入如下命令：</h4><pre><code>Java -version</code></pre>
+<p>如下所示，表示安装成功！<br>java version “1.8.0_75”<br>Java(TM) SE Runtime Environment (build 1.8.0_75-b13)<br>Java HotSpot(TM) 64-Bit Server VM (build 24.75-b04, mixed mode)</p>
+<h3 id="三、Linux安装Mysql："><a href="#三、Linux安装Mysql：" class="headerlink" title="三、Linux安装Mysql："></a><strong>三、Linux安装Mysql：</strong></h3><h4 id="1-下载mysql安装包"><a href="#1-下载mysql安装包" class="headerlink" title="1.下载mysql安装包"></a>1.下载mysql安装包</h4><blockquote>
+<p>下载地址：<a href="https://dev.mysql.com/downloads/mysql/5.7.html#downloads" target="_blank" rel="noopener">https://dev.mysql.com/downloads/mysql/5.7.html#downloads</a></p>
+</blockquote>
+<h4 id="2-解包"><a href="#2-解包" class="headerlink" title="2.解包"></a>2.解包</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">在&#x2F;usr&#x2F;local&#x2F;下创建mysql目录</span><br><span class="line">上传mysql安装包至mysql目录</span><br><span class="line">解压安装包至mysql目录</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-添加系统mysql组和mysql用户"><a href="#3-添加系统mysql组和mysql用户" class="headerlink" title="3.添加系统mysql组和mysql用户"></a>3.添加系统mysql组和mysql用户</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">检查mysql组和用户是否存在，如无创建</span><br><span class="line">cat &#x2F;etc&#x2F;group | grep mysql</span><br><span class="line">#类似</span><br><span class="line">mysql:x:490:</span><br><span class="line">cat &#x2F;etc&#x2F;passwd | grep mysql</span><br><span class="line">#类似</span><br><span class="line">mysql:x:496:490::&#x2F;home&#x2F;mysql:&#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p>以上为存在的情况，如无，执行添加命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">groupadd mysql</span><br><span class="line">useradd -r -g mysql mysql</span><br></pre></td></tr></table></figure>
+<h4 id="4-安装数据库"><a href="#4-安装数据库" class="headerlink" title="4.安装数据库"></a>4.安装数据库</h4><p> 在/usr/local/mysql下创建data目录<br> 将/usr/local/mysql的所有者及所属组改为mysql：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chown -R mysql.mysql &#x2F;usr&#x2F;local&#x2F;mysql</span><br></pre></td></tr></table></figure>
+<p>在/opt/mysql/mysql-5.7.25/support-files目录下创建my_default.cnf</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">sql_mode&#x3D;NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES </span><br><span class="line">basedir &#x3D; &#x2F;opt&#x2F;mysql&#x2F;mysql-5.7.25</span><br><span class="line">datadir &#x3D; &#x2F;opt&#x2F;mysql&#x2F;mysql-5.7.25&#x2F;data</span><br><span class="line">port &#x3D; 3306</span><br><span class="line">socket &#x3D; &#x2F;tmp&#x2F;mysql.sock</span><br><span class="line">character-set-server&#x3D;utf8</span><br><span class="line">log-error &#x3D; &#x2F;opt&#x2F;mysql&#x2F;mysql-5.7.25&#x2F;data&#x2F;mysqld.log</span><br><span class="line">pid-file &#x3D; &#x2F;opt&#x2F;mysql&#x2F;mysql-5.7.25&#x2F;data&#x2F;mysqld.pid</span><br></pre></td></tr></table></figure>
+<p>将my_default.cnf的内容替换 /etc/my.cnf文件中的内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp support-files&#x2F;my_default.cnf &#x2F;etc&#x2F;my.cnf</span><br></pre></td></tr></table></figure>
+<h4 id="5-初始化-mysqld"><a href="#5-初始化-mysqld" class="headerlink" title="5.初始化 mysqld"></a>5.初始化 mysqld</h4><p>在 /usr/local/mysql路径下执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F; --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data&#x2F;</span><br></pre></td></tr></table></figure>
+<p><strong>如果出错，提示<code>error while loading shared libraries: libnuma.so.1: cannot open shared object file: No such file or directory</code><br>这是因为libnuma.so在centos6.5环境下默认安装的32位的，我的mysql5.7是64位的，所以需要安装个64位的<br>直接运行：yum -y install numactl.x8664就可以了*</strong></p>
+<h4 id="6-初始化完成之后，查看日志获取初始化密码"><a href="#6-初始化完成之后，查看日志获取初始化密码" class="headerlink" title="6.初始化完成之后，查看日志获取初始化密码"></a>6.初始化完成之后，查看日志获取初始化密码</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;data&#x2F;mysqld.log</span><br></pre></td></tr></table></figure>
+<p>查看密码： <code>a8?DQir=T+k+</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2019-04-08T06:14:29.790033Z 1 [Note] A temporary password is generated for root@localhost: a8?DQir&#x3D;T+k+</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-启动mysql服务"><a href="#7-启动mysql服务" class="headerlink" title="7.启动mysql服务"></a>7.启动mysql服务</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">在&#x2F;usr&#x2F;local&#x2F;mysql路径下</span><br><span class="line">service mysql start</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-连接mysql，修改初始化密码"><a href="#8-连接mysql，修改初始化密码" class="headerlink" title="8.连接mysql，修改初始化密码"></a>8.连接mysql，修改初始化密码</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;mysql -u root -p</span><br><span class="line">mysql&gt; set password&#x3D;password(&#39;123456&#39;);</span><br><span class="line">mysql&gt; grant all privileges on *.* to root@&#39;%&#39; identified by &#39;123456&#39;;</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+<h4 id="9-添加远程访问权限"><a href="#9-添加远程访问权限" class="headerlink" title="9.添加远程访问权限"></a>9.添加远程访问权限</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">mysql&gt; update user set host&#x3D;&#39;%&#39; where user &#x3D; &#39;root&#39;;</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+<h4 id="10-重启mysql生效"><a href="#10-重启mysql生效" class="headerlink" title="10.重启mysql生效"></a>10.重启mysql生效</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt;exit;</span><br><span class="line">service mysql stop</span><br><span class="line">service mysql start</span><br></pre></td></tr></table></figure>
+
+
+<br>
+
+<h3 id="四、Linux安装Tomcat："><a href="#四、Linux安装Tomcat：" class="headerlink" title="四、Linux安装Tomcat："></a><strong>四、Linux安装Tomcat：</strong></h3><h4 id="1-下载后解压"><a href="#1-下载后解压" class="headerlink" title="1.下载后解压"></a>1.下载后解压</h4><p><a href="http://tomcat.apache.org/download-70.cgi" target="_blank" rel="noopener">http://tomcat.apache.org/download-70.cgi</a> 下载tomcat<br>将 apache-tomcat-7.0.47.tar.gz 拷贝至 /usr/local 目录下，并解压至当前目录（可以删除安装包，并重命名文件夹）</p>
+<h4 id="2-在-usr-local目录中解决文件并删除压缩文件"><a href="#2-在-usr-local目录中解决文件并删除压缩文件" class="headerlink" title="2.在/usr/local目录中解决文件并删除压缩文件"></a>2.在/usr/local目录中解决文件并删除压缩文件</h4><pre><code>tar -zxvf  (解压文件)
+rm -rf  （删除文件）</code></pre>
+<h4 id="3-运行tomcat"><a href="#3-运行tomcat" class="headerlink" title="3.运行tomcat"></a>3.运行tomcat</h4><p>进入到tomcat的bin目录中运行startup.sh</p>
+<pre><code>[root@localhost bin]# ./startup.sh</code></pre>
+<h4 id="4-打开浏览器测试"><a href="#4-打开浏览器测试" class="headerlink" title="4.打开浏览器测试"></a>4.打开浏览器测试</h4><h4 id="5-远程访问及防火墙"><a href="#5-远程访问及防火墙" class="headerlink" title="5.远程访问及防火墙"></a>5.远程访问及防火墙</h4><p>如果是自己的主机，可以通过修改本机的防火墙加入8080即可。</p>
+<pre><code>[root@admin ~]# vi /etc/sysconfig/iptables  </code></pre>
+<p>在commit之前加入：</p>
+<pre><code>-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT  
+</code></pre>
+<p>然后重启防火墙：<br>[root@admin ~]# service iptables restart<br>iptables: Setting chains to policy ACCEPT: filter [  OK  ]<br>iptables: Flushing firewall rules:                [  OK  ]<br>iptables: Unloading modules:                      [  OK  ]<br>iptables: Applying firewall rules:                [  OK  ]<br>而后即可正常访问8080端口。</p>
+<h4 id="6-修改tomcat服务器的启动端口-（视情况而定"><a href="#6-修改tomcat服务器的启动端口-（视情况而定" class="headerlink" title="6.修改tomcat服务器的启动端口 （视情况而定)"></a>6.修改tomcat服务器的启动端口 （视情况而定)</h4><pre><code>cd apache-tomcat-7.0.47/conf/
+ls
+vi server.xml  (编辑server.xml配置文件)
+</code></pre>
+<p>找到节点Connector里面属性port,修改为你想要的端口号<br>修改完server.xml文件之后，保存，退出。</p>
+<h4 id="7-关闭服务器"><a href="#7-关闭服务器" class="headerlink" title="7.关闭服务器"></a>7.关闭服务器</h4><pre><code>[root@localhost bin]# ./shutdown.sh"
+</code></pre>
+<h4 id="8-部署web项目到tomcat服务器"><a href="#8-部署web项目到tomcat服务器" class="headerlink" title="8.部署web项目到tomcat服务器"></a>8.部署web项目到tomcat服务器</h4><p>使用开发工具打包javaweb项目，生成war包<br>将war包发布到tomcat服务器的webapps目录下<br>tomcat会自动解压war包得到对应的项目文件夹</p>
+<br>
+]]></content>
+      <categories>
+        <category>系统</category>
+        <category>服务器</category>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Linux</tag>
+        <tag>Mysql</tag>
+        <tag>服务器</tag>
+        <tag>部署</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/04/28/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+</search>
