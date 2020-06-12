@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Linux环境下搭建Java、安装Mysql和部署应用</title>
-    <url>/2020/06/02/Linux%E7%8E%AF%E5%A2%83%E4%B8%8B%E6%90%AD%E5%BB%BAJava%E3%80%81%E5%AE%89%E8%A3%85Mysql%E5%92%8C%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8/</url>
+    <url>/index/2020/06/02/Linux%E7%8E%AF%E5%A2%83%E4%B8%8B%E6%90%AD%E5%BB%BAJava%E3%80%81%E5%AE%89%E8%A3%85Mysql%E5%92%8C%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[<blockquote>
 <p><strong><code>服务器系统：CentOS 7.6 64位</code></strong><br><strong><code>JDK：jdk-8u191-linux-x64.tar</code></strong><br><strong><code>Mysql：mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz</code></strong><br><strong><code>Tomcat：tomcat-8.0.35</code></strong><br><strong><code>应用：</code></strong><a href="http://www.zhiblog.cn/" target="_blank" rel="noopener">志博客</a></p>
 </blockquote>
@@ -104,7 +104,7 @@ vi server.xml  (编辑server.xml配置文件)
   </entry>
   <entry>
     <title>Sybase数据库备份与还原</title>
-    <url>/2020/05/27/Sybase%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/</url>
+    <url>/index/2020/05/27/Sybase%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/</url>
     <content><![CDATA[<h1 id="一、Sybase简介"><a href="#一、Sybase简介" class="headerlink" title="一、Sybase简介"></a>一、Sybase简介</h1><p>Sybase是一种关系型数据库系统，是一种典型的UNIX或WindowsNT平台上客户机或服务器环境下的大型数据库系统。 Sybase提供了一套应用程序编程接口和库，可以与非Sybase数据源及服务器集成，允许在多个数据库之间复制数据，适于创建多层应用。系统具有完备的触发器、存储过程、规则以及完整性定义，支持优化查询，具有较好的数据安全性。Sybase通常与SybaseSQLAnywhere用于客户机/服务器环境，前者作为服务器数据库，后者为客户机数据库。<br>Sybase优点：适用于大型企业信息建设，功能强大，性能稳定，经受了银行、电信的TB级数据的多年考验；<br>Sybase缺点：操作复杂，上手慢，其安装、部署和管理需要sybase精通的数据库管理专家操作。</p>
 <hr>
 <h1 id="二、sybase备份"><a href="#二、sybase备份" class="headerlink" title="二、sybase备份"></a>二、sybase备份</h1><ol>
@@ -135,7 +135,7 @@ c、创建数据库<figure class="highlight plain"><table><tr><td class="code"><
   </entry>
   <entry>
     <title>自动定位当前城市获取实时天气预报</title>
-    <url>/2020/06/02/article2/</url>
+    <url>/index/2020/06/02/article2/</url>
     <content><![CDATA[<blockquote>
 <p>先上效果图，看图说话</p>
 </blockquote>
@@ -179,7 +179,7 @@ c、创建数据库<figure class="highlight plain"><table><tr><td class="code"><
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/2020/04/28/hello-world/</url>
+    <url>/index/2020/04/28/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 
