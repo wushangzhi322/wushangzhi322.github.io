@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Sybase数据库备份与还原</title>
+    <url>/2020/05/27/Sybase%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/</url>
+    <content><![CDATA[<h1 id="一、Sybase简介"><a href="#一、Sybase简介" class="headerlink" title="一、Sybase简介"></a>一、Sybase简介</h1><p>Sybase是一种关系型数据库系统，是一种典型的UNIX或WindowsNT平台上客户机或服务器环境下的大型数据库系统。 Sybase提供了一套应用程序编程接口和库，可以与非Sybase数据源及服务器集成，允许在多个数据库之间复制数据，适于创建多层应用。系统具有完备的触发器、存储过程、规则以及完整性定义，支持优化查询，具有较好的数据安全性。Sybase通常与SybaseSQLAnywhere用于客户机/服务器环境，前者作为服务器数据库，后者为客户机数据库。<br>Sybase优点：适用于大型企业信息建设，功能强大，性能稳定，经受了银行、电信的TB级数据的多年考验；<br>Sybase缺点：操作复杂，上手慢，其安装、部署和管理需要sybase精通的数据库管理专家操作。</p>
+<hr>
+<h1 id="二、sybase备份"><a href="#二、sybase备份" class="headerlink" title="二、sybase备份"></a>二、sybase备份</h1><ol>
+<li>cmd 进入数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">isql -U sa </span><br><span class="line">password</span><br></pre></td></tr></table></figure></li>
+<li>使用数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use aicods_gd</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+<li>备份数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkpoint      &#x2F;&#x2F;将所有脏页写入到数据库设备</span><br><span class="line">go</span><br><span class="line">sp_flushstats   &#x2F;&#x2F;将内存中存储的统计信息刷新到systabstats系统表</span><br><span class="line">go</span><br><span class="line">dump database aicods to &#39;compress::F:\backup\CW\aicods.dmp&#39;	&#x2F;&#x2F;开始备份</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzU2OTFiNzNiYTYwYWY2MjcxYTBkNGJiYzRlYWRkNDFiLnBuZw?x-oss-process=image/format,png"  alt="演示图片1"></li>
+</ol>
+<hr>
+<h1 id="三、sybase还原"><a href="#三、sybase还原" class="headerlink" title="三、sybase还原"></a>三、sybase还原</h1><ol>
+<li>cmd 进入数据库</li>
+<li>创建数据库<br>a、创建数据库设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use master </span><br><span class="line">go</span><br><span class="line">disk init</span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_dat&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_dat.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;128M&quot;</span><br><span class="line">go</span><br><span class="line">(physname:设备存放的磁盘路径）</span><br><span class="line">(size:设备分配的大小空间，可通过sp_helpdb aicods查看源数据库的大小与设备信息)</span><br></pre></td></tr></table></figure>
+b、创建数据库日志设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">disk init </span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_log&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_log.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;32M&quot;</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+c、创建数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create database aicods</span><br><span class="line">   on dev_db_aicods_dat&#x3D;128</span><br><span class="line">   log on dev_db_aicods_log&#x3D;32</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
+<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzViZGQ3MjFmYzRmZjkyOTZhNzZhYzVhMTJlMzRjOTA1LnBuZw?x-oss-process=image/format,png"  alt="演示图片2"><br><br><br></li>
+<li>开始还原<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">load database aicods from &#39;compress::F:\backup\CW\aicods.dmp&#39;</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+<li>还原结束后，需要重新激活数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">online database aicods </span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>Sybase</category>
+      </categories>
+      <tags>
+        <tag>Sybase</tag>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux环境下搭建Java、安装Mysql和部署应用</title>
     <url>/2020/06/02/Linux%E7%8E%AF%E5%A2%83%E4%B8%8B%E6%90%AD%E5%BB%BAJava%E3%80%81%E5%AE%89%E8%A3%85Mysql%E5%92%8C%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[<blockquote>
@@ -100,37 +131,6 @@ vi server.xml  (编辑server.xml配置文件)
         <tag>Mysql</tag>
         <tag>服务器</tag>
         <tag>部署</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Sybase数据库备份与还原</title>
-    <url>/2020/05/27/Sybase%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F/</url>
-    <content><![CDATA[<h1 id="一、Sybase简介"><a href="#一、Sybase简介" class="headerlink" title="一、Sybase简介"></a>一、Sybase简介</h1><p>Sybase是一种关系型数据库系统，是一种典型的UNIX或WindowsNT平台上客户机或服务器环境下的大型数据库系统。 Sybase提供了一套应用程序编程接口和库，可以与非Sybase数据源及服务器集成，允许在多个数据库之间复制数据，适于创建多层应用。系统具有完备的触发器、存储过程、规则以及完整性定义，支持优化查询，具有较好的数据安全性。Sybase通常与SybaseSQLAnywhere用于客户机/服务器环境，前者作为服务器数据库，后者为客户机数据库。<br>Sybase优点：适用于大型企业信息建设，功能强大，性能稳定，经受了银行、电信的TB级数据的多年考验；<br>Sybase缺点：操作复杂，上手慢，其安装、部署和管理需要sybase精通的数据库管理专家操作。</p>
-<hr>
-<h1 id="二、sybase备份"><a href="#二、sybase备份" class="headerlink" title="二、sybase备份"></a>二、sybase备份</h1><ol>
-<li>cmd 进入数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">isql -U sa </span><br><span class="line">password</span><br></pre></td></tr></table></figure></li>
-<li>使用数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use aicods_gd</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
-<li>备份数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkpoint      &#x2F;&#x2F;将所有脏页写入到数据库设备</span><br><span class="line">go</span><br><span class="line">sp_flushstats   &#x2F;&#x2F;将内存中存储的统计信息刷新到systabstats系统表</span><br><span class="line">go</span><br><span class="line">dump database aicods to &#39;compress::F:\backup\CW\aicods.dmp&#39;	&#x2F;&#x2F;开始备份</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
-<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzU2OTFiNzNiYTYwYWY2MjcxYTBkNGJiYzRlYWRkNDFiLnBuZw?x-oss-process=image/format,png"  alt="演示图片1"></li>
-</ol>
-<hr>
-<h1 id="三、sybase还原"><a href="#三、sybase还原" class="headerlink" title="三、sybase还原"></a>三、sybase还原</h1><ol>
-<li>cmd 进入数据库</li>
-<li>创建数据库<br>a、创建数据库设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use master </span><br><span class="line">go</span><br><span class="line">disk init</span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_dat&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_dat.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;128M&quot;</span><br><span class="line">go</span><br><span class="line">(physname:设备存放的磁盘路径）</span><br><span class="line">(size:设备分配的大小空间，可通过sp_helpdb aicods查看源数据库的大小与设备信息)</span><br></pre></td></tr></table></figure>
-b、创建数据库日志设备<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">disk init </span><br><span class="line">   name&#x3D;&quot;dev_db_aicods_log&quot;,</span><br><span class="line">   physname&#x3D;&quot;E:\sybase\DSFY100\data\dev_db_aicods_log.dat&quot;,</span><br><span class="line">   size&#x3D;&quot;32M&quot;</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
-c、创建数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create database aicods</span><br><span class="line">   on dev_db_aicods_dat&#x3D;128</span><br><span class="line">   log on dev_db_aicods_log&#x3D;32</span><br><span class="line">go</span><br></pre></td></tr></table></figure>
-<img src="/" class="lazyload" data-src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy56aGlibG9nLmNuL2ltZy9ibG9nLzViZGQ3MjFmYzRmZjkyOTZhNzZhYzVhMTJlMzRjOTA1LnBuZw?x-oss-process=image/format,png"  alt="演示图片2"><br><br><br></li>
-<li>开始还原<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">load database aicods from &#39;compress::F:\backup\CW\aicods.dmp&#39;</span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
-<li>还原结束后，需要重新激活数据库<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">online database aicods </span><br><span class="line">go</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <categories>
-        <category>数据库</category>
-        <category>Sybase</category>
-      </categories>
-      <tags>
-        <tag>Sybase</tag>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
